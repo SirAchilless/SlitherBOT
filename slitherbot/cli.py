@@ -8,7 +8,7 @@ from dataclasses import replace
 from typing import Iterable
 
 from .bot import SlitherBot
-from .config import BotConfig, StrategyMode, parse_config_overrides
+from .config import BotConfig, StrategyMode
 
 
 def parse_arguments(argv: Iterable[str] | None = None) -> BotConfig:
@@ -36,8 +36,9 @@ def parse_arguments(argv: Iterable[str] | None = None) -> BotConfig:
     logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
     config = BotConfig(server_url=args.server, nickname=args.nickname, mode=StrategyMode(args.mode))
     if args.config:
-        overrides = parse_config_overrides(args.config)
+        overrides = BotConfig.from_iterable(args.config)
         config = replace(config, **overrides)
+        config = BotConfig(**{**config.__dict__, **overrides.__dict__})  # type: ignore[arg-type]
     return config
 
 

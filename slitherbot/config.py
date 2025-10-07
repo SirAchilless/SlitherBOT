@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 
 class StrategyMode(str, Enum):
@@ -63,40 +64,32 @@ class BotConfig:
             return "BOT" if "bot" not in lowered else f"{self.nickname}_1"
         return self.nickname
 
-    @staticmethod
-    def from_iterable(args: Iterable[str]) -> Dict[str, Any]:
-        """Backwards compatible wrapper for :func:`parse_config_overrides`."""
+    @classmethod
+    def from_iterable(cls, args: Iterable[str]) -> Dict[str, Any]:
+        """Create configuration keyword arguments from CLI style overrides."""
 
-        return parse_config_overrides(args)
+        kwargs: Dict[str, Any] = {}
+    def from_iterable(cls, args: Iterable[str]) -> "BotConfig":
+        """Create a configuration from CLI style key=value arguments."""
 
-
-def parse_config_overrides(args: Iterable[str]) -> Dict[str, Any]:
-    """Create configuration keyword arguments from CLI style overrides.
-
-    Some Windows console-script launchers have been observed to mis-bind the
-    ``BotConfig.from_iterable`` descriptor, handing the class itself as the
-    first positional argument. Importing and calling this free function avoids
-    that edge case entirely while still keeping ``BotConfig.from_iterable`` as
-    a convenience wrapper for backwards compatibility.
-    """
-
-    kwargs: Dict[str, Any] = {}
-    for item in args:
-        if "=" not in item:
-            raise ValueError(f"Invalid configuration override: {item}")
-        key, value = item.split("=", 1)
-        key = key.strip()
-        value = value.strip()
-        if key == "mode":
-            kwargs[key] = StrategyMode(value)
-        elif key in {"reconnect_attempts"}:
-            kwargs[key] = int(value)
-        elif key in {
-            "reconnect_backoff",
-            "heartbeat_interval",
-            "send_rate_limit",
-        }:
-            kwargs[key] = float(value)
-        else:
-            kwargs[key] = value
-    return kwargs
+        kwargs = {}
+        for item in args:
+            if "=" not in item:
+                raise ValueError(f"Invalid configuration override: {item}")
+            key, value = item.split("=", 1)
+            key = key.strip()
+            value = value.strip()
+            if key == "mode":
+                kwargs[key] = StrategyMode(value)
+            elif key in {"reconnect_attempts"}:
+                kwargs[key] = int(value)
+            elif key in {
+                "reconnect_backoff",
+                "heartbeat_interval",
+                "send_rate_limit",
+            }:
+                kwargs[key] = float(value)
+            else:
+                kwargs[key] = value
+        return kwargs
+        return cls(**kwargs)
