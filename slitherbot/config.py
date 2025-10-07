@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 
 class StrategyMode(str, Enum):
@@ -63,24 +64,15 @@ class BotConfig:
             return "BOT" if "bot" not in lowered else f"{self.nickname}_1"
         return self.nickname
 
-    @staticmethod
-    def from_iterable(args: Iterable[str]) -> Dict[str, Any]:
-        """Create configuration keyword arguments from CLI style overrides.
-
-        A ``@staticmethod`` is used instead of ``@classmethod`` to avoid the
-        subtle binding differences that appear on some Python builds when the
-        dataclass is imported through the generated console script launcher on
-        Windows. In that environment the descriptor protocol can end up
-        handing ``from_iterable`` the *type* object as the first positional
-        argument, causing ``TypeError: ... missing 1 required positional
-        argument: 'args'`` even though the call site provides the iterable of
-        overrides. Making the helper a plain static function keeps the
-        signature stable regardless of how it's accessed (via the class or an
-        instance) and better matches its intent: parsing a sequence of
-        ``key=value`` strings into keyword arguments.
-        """
+    @classmethod
+    def from_iterable(cls, args: Iterable[str]) -> Dict[str, Any]:
+        """Create configuration keyword arguments from CLI style overrides."""
 
         kwargs: Dict[str, Any] = {}
+    def from_iterable(cls, args: Iterable[str]) -> "BotConfig":
+        """Create a configuration from CLI style key=value arguments."""
+
+        kwargs = {}
         for item in args:
             if "=" not in item:
                 raise ValueError(f"Invalid configuration override: {item}")
@@ -100,3 +92,4 @@ class BotConfig:
             else:
                 kwargs[key] = value
         return kwargs
+        return cls(**kwargs)

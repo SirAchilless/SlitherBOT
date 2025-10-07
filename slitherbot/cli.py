@@ -38,6 +38,7 @@ def parse_arguments(argv: Iterable[str] | None = None) -> BotConfig:
     if args.config:
         overrides = BotConfig.from_iterable(args.config)
         config = replace(config, **overrides)
+        config = BotConfig(**{**config.__dict__, **overrides.__dict__})  # type: ignore[arg-type]
     return config
 
 
