@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 
 class StrategyMode(str, Enum):
@@ -68,6 +69,10 @@ class BotConfig:
         """Create configuration keyword arguments from CLI style overrides."""
 
         kwargs: Dict[str, Any] = {}
+    def from_iterable(cls, args: Iterable[str]) -> "BotConfig":
+        """Create a configuration from CLI style key=value arguments."""
+
+        kwargs = {}
         for item in args:
             if "=" not in item:
                 raise ValueError(f"Invalid configuration override: {item}")
@@ -87,3 +92,4 @@ class BotConfig:
             else:
                 kwargs[key] = value
         return kwargs
+        return cls(**kwargs)
