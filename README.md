@@ -20,10 +20,32 @@ source .venv/bin/activate
 pip install -e .
 ```
 
+On Windows PowerShell use:
+
+```powershell
+python -m venv .venv
+.venv\\Scripts\\Activate.ps1
+pip install -e .
+```
+
+On `cmd.exe` the activation step becomes `\.venv\\Scripts\\activate.bat`.
+
+> **Tip**: The trailing dot (`pip install -e .`) tells pip to install the
+> project in the current directory. Omitting it results in the error
+> `-e option requires 1 argument`.
+
 ## Running the bot
 
 ```bash
 slitherbot ws://127.0.0.1:4444 "SneakyBot" --mode hunt --config heartbeat_interval=2.0 send_rate_limit=0.05
+```
+
+If the `slitherbot` command is not found on Windows, explicitly invoke the script from the
+virtual environment or run the package as a module:
+
+```powershell
+.venv\Scripts\slitherbot.exe ws://127.0.0.1:4444 "SneakyBot" --mode hunt
+python -m slitherbot ws://127.0.0.1:4444 "SneakyBot" --mode hunt
 ```
 
 The `--config` option accepts additional `key=value` overrides for any `BotConfig` field.

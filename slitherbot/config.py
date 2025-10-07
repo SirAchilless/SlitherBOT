@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, Iterable, List, Tuple
 from typing import Iterable, List, Tuple
 
 
@@ -64,6 +65,10 @@ class BotConfig:
         return self.nickname
 
     @classmethod
+    def from_iterable(cls, args: Iterable[str]) -> Dict[str, Any]:
+        """Create configuration keyword arguments from CLI style overrides."""
+
+        kwargs: Dict[str, Any] = {}
     def from_iterable(cls, args: Iterable[str]) -> "BotConfig":
         """Create a configuration from CLI style key=value arguments."""
 
@@ -86,4 +91,5 @@ class BotConfig:
                 kwargs[key] = float(value)
             else:
                 kwargs[key] = value
+        return kwargs
         return cls(**kwargs)
