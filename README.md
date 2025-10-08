@@ -50,12 +50,6 @@ python -m slitherbot ws://127.0.0.1:4444 "SneakyBot" --mode hunt
 
 The `--config` option accepts additional `key=value` overrides for any `BotConfig` field.
 
-> **Windows note**: If you recently pulled an update and still encounter
-> `BotConfig.from_iterable() missing 1 required positional argument: 'args'`,
-> re-run `pip install -e .` inside your virtual environment. This refreshes the
-> console launcher so that configuration overrides are parsed correctly. You can
-> always bypass the launcher altogether with `python -m slitherbot ...`.
-
 ## Integrating with a server
 
 The reference implementation expects the following JSON messages over WebSocket:

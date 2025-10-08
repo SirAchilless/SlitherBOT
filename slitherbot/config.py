@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Tuple
+from typing import Iterable, List, Tuple
 
 
 class StrategyMode(str, Enum):
@@ -63,70 +64,32 @@ class BotConfig:
             return "BOT" if "bot" not in lowered else f"{self.nickname}_1"
         return self.nickname
 
-    @staticmethod
-    def from_iterable(*raw_args: Iterable[str]) -> Dict[str, Any]:
-        """Backwards compatible wrapper for :func:`parse_config_overrides`.
+    @classmethod
+    def from_iterable(cls, args: Iterable[str]) -> Dict[str, Any]:
+        """Create configuration keyword arguments from CLI style overrides."""
 
-        The function accepts ``*raw_args`` instead of a single iterable so it can
-        gracefully handle two edge-cases observed on Windows:
+        kwargs: Dict[str, Any] = {}
+    def from_iterable(cls, args: Iterable[str]) -> "BotConfig":
+        """Create a configuration from CLI style key=value arguments."""
 
-        * Some console launchers bind the descriptor as if it were an instance
-          method, providing the ``BotConfig`` class as the first positional
-          argument followed by the actual iterable.
-        * Other launchers correctly treat the function as a staticmethod and
-          only forward the iterable.
-
-        Normalising the incoming values keeps older console entry points (and
-        cached bytecode) working after users upgrade the package without
-        forcing a reinstall of the script wrapper.
-        """
-
-        if not raw_args:
-            raise TypeError("BotConfig.from_iterable() missing configuration values")
-
-        if len(raw_args) == 1:
-            iterable = raw_args[0]
-        elif len(raw_args) == 2 and isinstance(raw_args[0], type) and issubclass(raw_args[0], BotConfig):
-            # Windows console launchers sometimes inject the class itself as the
-            # first positional argument when the entry point was generated before
-            # upgrading the package. Accept the second argument as the iterable.
-            iterable = raw_args[1]
-        else:
-            raise TypeError(
-                "BotConfig.from_iterable() received unexpected arguments; "
-                "re-run 'pip install -e .' to refresh the console script"
-            )
-
-        return parse_config_overrides(iterable)
-
-
-def parse_config_overrides(args: Iterable[str]) -> Dict[str, Any]:
-    """Create configuration keyword arguments from CLI style overrides.
-
-    Some Windows console-script launchers have been observed to mis-bind the
-    ``BotConfig.from_iterable`` descriptor, handing the class itself as the
-    first positional argument. Importing and calling this free function avoids
-    that edge case entirely while still keeping ``BotConfig.from_iterable`` as
-    a convenience wrapper for backwards compatibility.
-    """
-
-    kwargs: Dict[str, Any] = {}
-    for item in args:
-        if "=" not in item:
-            raise ValueError(f"Invalid configuration override: {item}")
-        key, value = item.split("=", 1)
-        key = key.strip()
-        value = value.strip()
-        if key == "mode":
-            kwargs[key] = StrategyMode(value)
-        elif key in {"reconnect_attempts"}:
-            kwargs[key] = int(value)
-        elif key in {
-            "reconnect_backoff",
-            "heartbeat_interval",
-            "send_rate_limit",
-        }:
-            kwargs[key] = float(value)
-        else:
-            kwargs[key] = value
-    return kwargs
+        kwargs = {}
+        for item in args:
+            if "=" not in item:
+                raise ValueError(f"Invalid configuration override: {item}")
+            key, value = item.split("=", 1)
+            key = key.strip()
+            value = value.strip()
+            if key == "mode":
+                kwargs[key] = StrategyMode(value)
+            elif key in {"reconnect_attempts"}:
+                kwargs[key] = int(value)
+            elif key in {
+                "reconnect_backoff",
+                "heartbeat_interval",
+                "send_rate_limit",
+            }:
+                kwargs[key] = float(value)
+            else:
+                kwargs[key] = value
+        return kwargs
+        return cls(**kwargs)
