@@ -1,0 +1,43 @@
+# Default configuration for the daily LinkedIn finance automation.
+# Copy or override values via environment variables or another config file if required.
+feeds:
+  - name: Google News - India Markets
+    url: https://news.google.com/rss/topics/CAAqJQgKIh9DQkFTRVFvSUwyMHZNREZqY0dKTkVnSmxiaWdBUAE?hl=en-IN&gl=IN&ceid=IN:en
+  - name: Reuters Markets
+    url: https://www.reutersagency.com/feed/?best-topics=business-finance&post_type=best
+  - name: SEC Newsroom
+    url: https://www.sec.gov/news/pressreleases.rss
+  - name: Reserve Bank of India Press Releases
+    url: https://www.rbi.org.in/pressreleases_rss.xml
+  - name: World Bank Blogs - Finance
+    url: https://blogs.worldbank.org/finance/rss.xml
+  - name: Reddit r/finance
+    url: https://www.reddit.com/r/finance/.rss
+  - name: IMF News
+    url: https://www.imf.org/external/rss.aspx?category=PressReleases
+minimum_sources_per_topic: 2
+max_topics: 2
+recency_half_life_hours: 12
+sentiment_window: 150
+timezone: Asia/Kolkata
+post_character_limit: 1200
+max_bullet_words: 22
+takeaway_max_words: 25
+headline_max_chars: 80
+hashtags_pool:
+  - markets
+  - investing
+  - economy
+  - personalfinance
+  - emergingmarkets
+  - fintech
+  - inflation
+  - equities
+  - bonds
+  - macro
+  - growth
+mandatory_hashtags:
+  - markets
+  - investing
+closing_disclaimer: "This is not investment advice."
+dry_run: false

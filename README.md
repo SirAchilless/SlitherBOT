@@ -4,6 +4,10 @@ A modular Python automation bot for [slither.io](https://slither.io/) style serv
 
 > **Note**: The provided protocol assumes a JSON-based self-hosted server used for testing purposes. When targeting the original slither.io protocol, a translation layer is required because the official servers use a custom binary format.
 
+
+## Daily LinkedIn Finance Automation
+
+This repository also includes a fully unattended workflow for publishing daily finance insights to LinkedIn. See `docs/linkedin_finance_automation.md` and the `automation/linkedin_daily` package for details.
 ## Features
 
 - 🧠 **Strategy modes**: farm (passive growth), hunt (aggressive targeting) and survival (defensive play). Modes can be switched on-the-fly through server messages.
